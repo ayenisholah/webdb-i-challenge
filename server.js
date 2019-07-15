@@ -21,6 +21,10 @@ function getAccountById(id) {
   return db('accounts').where({ id });
 }
 
+function createNewAccount({ name, budget }) {
+  return db('accounts').insert({ name, budget });
+}
+
 server.use(express.json());
 
 // Endpoint here
@@ -37,6 +41,16 @@ server.get('/accounts/:id', async (req, res) => {
 server.get('/accounts', async (req, res, next) => {
   const accounts = await getAllAccounts();
   res.json(accounts);
+});
+
+server.post('/accounts', async (req, res, next) => {
+  try {
+    const arrayOfIds = await createNewAccount(req.body);
+    const arrayOfAccounts = await getAccountById(arrayOfIds[0]);
+    res.status(201).json(arrayOfAccounts[0]);
+  } catch (error) {
+    next(new Error ("Couldn't create account :"));
+  }
 });
 
 module.exports = server;
