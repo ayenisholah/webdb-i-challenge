@@ -29,6 +29,10 @@ function updateAccountById(id, { name, budget }) {
   return db('accounts').where({ id }).update({ name, budget });
 }
 
+function deleteAccountById(id) {
+  return db('accounts').where({ id }).del();
+}
+
 server.use(express.json());
 
 // Endpoint here
@@ -64,6 +68,14 @@ server.put('/accounts/:id', async (req, res, next) => {
     const results = await updateAccountById(req.params.id, { name, budget });
     res.json(results);
   }
-})
+});
+
+server.use(function errorHandler(err, req, res, next) {
+  console.error('ERROR:', err);
+  res.status(500).json({
+    message: err.message,
+    stack: err.stack,
+  });
+});
 
 module.exports = server;
