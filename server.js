@@ -14,8 +14,11 @@ const db = knex({
 
 // DB helper functions here
 function getAllBudgets() {
-  return db('budgets')
+  return db('budgets');
 }
+
+
+
 
 server.use(express.json());
 
