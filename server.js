@@ -13,18 +13,30 @@ const db = knex({
 });
 
 // DB helper functions here
-function getAllBudgets() {
-  return db('budgets');
+function getAllAccounts() {
+  return db('accounts');
 }
 
-
-
+function getAccountById(id) {
+  return db('accounts').where({ id });
+}
 
 server.use(express.json());
 
 // Endpoint here
 server.get('/', (req, res, next) => {
   res.json('success!');
+});
+
+Endpoint
+server.get('/accounts/:id', async (req, res) => {
+  const records = await getAccountById(req.params.id);
+  res.json(records[0]);
+});
+
+server.get('/accounts', async (req, res, next) => {
+  const accounts = await getAllAccounts();
+  res.json(accounts);
 });
 
 module.exports = server;
