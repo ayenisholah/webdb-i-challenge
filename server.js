@@ -25,6 +25,10 @@ function createNewAccount({ name, budget }) {
   return db('accounts').insert({ name, budget });
 }
 
+function updateAccountById(id, { name, budget }) {
+  return db('accounts').where({ id }).update({ name, budget });
+}
+
 server.use(express.json());
 
 // Endpoint here
@@ -32,7 +36,6 @@ server.get('/', (req, res, next) => {
   res.json('success!');
 });
 
-Endpoint
 server.get('/accounts/:id', async (req, res) => {
   const records = await getAccountById(req.params.id);
   res.json(records[0]);
@@ -52,5 +55,15 @@ server.post('/accounts', async (req, res, next) => {
     next(new Error ("Couldn't create account :"));
   }
 });
+
+server.put('/accounts/:id', async (req, res, next) => {
+  if(!req.body.name || !req.body.budget) {
+    next(new Error('name and budget are mandatory!!!'));
+  } else {
+    const { name, budget } = req.body;
+    const results = await updateAccountById(req.params.id, { name, budget });
+    res.json(results);
+  }
+})
 
 module.exports = server;
